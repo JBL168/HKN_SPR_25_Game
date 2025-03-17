@@ -1,42 +1,25 @@
 # pip install pygame-ce
+import sys
 import pygame
+from environment import Environment
+from player import Player
 
-# setup
-pygame.init()
-screen = pygame.display.set_mode((1280, 720))
-clock = pygame.Clock()
-running = True
-dt = 0
+WIDTH, HEIGHT = 1280, 720
+FPS = 60
 
-player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
+def main(window):
+    pygame.init()
+    pygame.display.set_caption('HKN Project Game')
+    
+    window = pygame.display.set_mode((WIDTH, HEIGHT))
+    clock = pygame.time.Clock()
 
-while running:
-    # check for game close
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
 
-    # background color & clear screen
-    screen.fill("white")
-
-    # RENDER YOUR GAME HERE
-    pygame.draw.circle(screen, "red", player_pos, 40)
-
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_w]:
-        player_pos.y -= 300 * dt
-    if keys[pygame.K_s]:
-        player_pos.y += 300 * dt
-    if keys[pygame.K_a]:
-        player_pos.x -= 300 * dt
-    if keys[pygame.K_d]:
-        player_pos.x += 300 * dt
-
-
-    # displays the work on screen
-    pygame.display.flip()
-
-    # limit to 60 fps (framerate-independent physics)
-    dt = clock.tick(60) / 1000
-
-pygame.quit()
+if __name__ == '__main__':
+    main()
