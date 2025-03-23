@@ -1,7 +1,5 @@
 import pygame
 
-
-
 class Environment:
     def __init__(self):
         '''
