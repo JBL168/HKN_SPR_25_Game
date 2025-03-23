@@ -8,6 +8,15 @@ WIDTH, HEIGHT = 1280, 720
 FPS = 60
 
 def main(window):
+    '''
+    Stub for initializing the player.
+    
+    TODO: 
+        - Instantiate game modules.
+        - Run gmae loop, processing events, updating game state, and rendering.
+        - Expand event handling.
+        - Integrate additional game modules and logic.
+    '''
     pygame.init()
     pygame.display.set_caption('HKN Project Game')
     
