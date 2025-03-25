@@ -21,7 +21,7 @@ class Environment:
         '''
         pass
 
-    def draw():
+    def draw(): # may look into adding textures, up to u
         '''
         Stub for displaying the environment onto the screen.
 

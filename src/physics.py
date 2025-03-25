@@ -1,36 +1,48 @@
 import pygame
 
-def apply_gravity():
+class Physics:
+  def __init__(self, position=(0,0), size=(50,50)):
+      '''
+      Stub for initializing an object. These attributes will be inherited by player.
+      
+      TODO: initialize variables
+
+      Variables:
+        self.position: the object's position vector
+        self.velocity: the object's velocity vector.
+        self.acceleration: the object's position vector.
+        self.hitbox: the object's hitbox (pygame.Rect). 
+      '''
+      pass
+  
+  def apply_gravity(self, has_gravity, gravity_amount):
     '''
     Stub for applying gravity to an object's velocity.
     
     Parameters:
-      velocity: the current pygame.math.Vector2 velocity vector.
-
-    Returns:
-      updated velocity vector.
+      self.has_gravity: gravity flag
+      self.gravity_amount: may potentially want different gravities
     '''
     pass
 
-def apply_acceleration():
+  def apply_acceleration(self): # up to you
+    pass
+
+  def update_physics():
     '''
-    Stub for applying acceleration to an object's velocity.
+    Stub for updating the object physics.
     
-    Parameters:
-      velocity: the current pygame.math.Vector2 velocity vector.
-      acceleration: the current pygame.math.Vector2 accelertion vector.
-
-    Returns:
-      updated velocity vector.
+    TODO:
+          - Update velocity based on acceleration.
+          - Update position based on velocity.
+          - Recalculate the hitbox's position.
     '''
-    pass
 
-def check_collisions():
+  def check_collisions():
     '''
     Stub for checking collisions between an entity and the environment.
     
     Parameters:
-      entity: The game object to check for collisions.
       environment: the environment containing objects for potential collision.
 
     Returns:

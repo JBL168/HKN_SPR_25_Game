@@ -13,7 +13,7 @@ def main(window):
     
     TODO: 
         - Instantiate game modules.
-        - Run gmae loop, processing events, updating game state, and rendering.
+        - Run game loop, processing events, updating game state, and rendering.
         - Expand event handling.
         - Integrate additional game modules and logic.
     '''

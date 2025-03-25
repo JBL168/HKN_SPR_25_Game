@@ -1,6 +1,7 @@
 import pygame
+from physics import Physics
 
-class Player:
+class Player(Physics):
     def __init__(self):
         '''
         Stub for initializing the player.
@@ -8,11 +9,10 @@ class Player:
         TODO: 
           - Set a starting position.
           - Define the player size and sprite.
-          - Initialize the velocity vector.
+          - Use inherited physics for position, velocity.
 
         Variables:
           self.rect: a pygame.Rect representing the character.
-          self.velocity: a pygame.math.Vector2 velocity vector.
         '''
         pass
 
@@ -21,7 +21,7 @@ class Player:
         Stub for updating the player's state
         
         TODO: 
-          - Process input to change player's position
+          - Process input to change player's position (left, right, jump)
           - Apply physics elements
           - Check & resolve environment collisions
 
@@ -31,7 +31,7 @@ class Player:
         '''
         pass
 
-    def draw():
+    def draw(self):
         '''
         Stub for rendering the player onto the screen
 
