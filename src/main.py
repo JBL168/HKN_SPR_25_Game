@@ -38,7 +38,7 @@ def main():
     colLayer.register(obstacle, lambda c: print("Doink!"))
 
     # Create a physics object to test with
-    ball = PhysicsObject(Vector2(100, 100), CircleCollider(5, Vector2(0, 10)), [colLayer], lambda c: None, True, .8)
+    ball = PhysicsObject(Vector2(100, 100), CircleCollider(5, Vector2(0, 10)), [colLayer], lambda c: None, True, .8, .1)
 
     frameCount = 0
 

@@ -132,7 +132,7 @@ class PhysicsObject:
     for obj in PhysicsObject._all:
       obj.update(frameTime)
 
-  def __init__(self, position: Vector2, collider: Collider, collisionLayers: list[CollisionLayer], onCollision: Callable[[Collider.Collision], None] = lambda c: None, hasGravity: bool = True, bounciness: float = 0.3):
+  def __init__(self, position: Vector2, collider: Collider, collisionLayers: list[CollisionLayer], onCollision: Callable[[Collider.Collision], None] = lambda c: None, hasGravity: bool = True, bounciness: float = 0.3, friction: float = 0.0):
     self._position = position
     self._lastPosition = position.copy()
     self._velocity = Vector2(0, 0)
@@ -141,6 +141,7 @@ class PhysicsObject:
     self._collisionCB = onCollision
     self._hasGravity = hasGravity
     self._restitution = bounciness
+    self._friction = friction
     for layer in self._collisionLayers:
       layer.register(self._collider, self._onCollision)
     PhysicsObject._all.append(self)
@@ -162,6 +163,7 @@ class PhysicsObject:
     normalComponent = undampedVelocity.project(collision.direction)
     orthogonalComponent = undampedVelocity - normalComponent
     normalComponent *= self._restitution
+    orthogonalComponent *= (1 - self._friction)
     self._velocity = normalComponent + orthogonalComponent
     self._position = self._lastPosition.copy()
     self._collider.moveTo(self._position)
