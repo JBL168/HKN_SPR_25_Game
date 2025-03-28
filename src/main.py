@@ -1,13 +1,38 @@
 # pip install pygame-ce
 import sys
+import os
+from os import listdir
+from os.path import isfile, join
 import pygame
 from environment import Environment
 from player import Player
 from physics import *
 
+pygame.init()
 WIDTH, HEIGHT = 1280, 720
 FPS = 60
+pygame.display.set_caption('HKN Project Game')
+window = pygame.display.set_mode((WIDTH, HEIGHT))
 
+def get_background(name):
+    image = pygame.image.load(join("assets", "sprites", "Background", name))
+    _, _, width, height = image.get_rect()
+    tiles = []
+
+    for i in range(WIDTH // width + 1):
+        for j in range(HEIGHT // height + 1):
+            pos = (i * width, j * height)
+            tiles.append(pos)
+
+    return tiles, image
+
+def draw(window, background, bg_image, player):
+    for tile in background:
+        window.blit(bg_image, tile)
+    player.draw(window)
+    pygame.display.update()
+
+<<<<<<< HEAD
 def main():
     '''
     Stub for initializing the player.
@@ -20,10 +45,13 @@ def main():
     '''
     pygame.init()
     pygame.display.set_caption('HKN Project Game')
+=======
+def main(window):
+>>>>>>> player-move-draw
     
-    window = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
 
+<<<<<<< HEAD
     # Create a collision layer that holds all the objects that should be able to hit each other
     colLayer = CollisionLayer()
 
@@ -41,10 +69,16 @@ def main():
     ball = PhysicsObject(Vector2(100, 100), CircleCollider(5), [colLayer], lambda c: None, True, .8, .1)
 
     frameCount = 0
+=======
+    background, bg_image = get_background("Blue.png")
+    player = Player(100,100,50,50)
+
+>>>>>>> player-move-draw
 
     running = True
     clock.tick()
     while running:
+<<<<<<< HEAD
         window.fill("white")
 
         # Draw the obstacle and ball
@@ -52,11 +86,18 @@ def main():
         pygame.draw.circle(window, pygame.Color(0, 0, 255), ball.getPosition(), 5)
 
         pygame.display.flip()
+=======
+        clock.tick(FPS)
+>>>>>>> player-move-draw
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+        player.loop(FPS)
+        player.handle_move(player)
+        draw(window, background, bg_image, player)
 
+<<<<<<< HEAD
         # if frameCount % 30 == 0:
         # ball.printDebug()
         PhysicsObject.updateAll(clock.get_time())
@@ -67,3 +108,10 @@ def main():
 
 if __name__ == '__main__':
     main()
+=======
+    pygame.quit()
+    quit()
+
+if __name__ == "__main__":
+    main(window)
+>>>>>>> player-move-draw
