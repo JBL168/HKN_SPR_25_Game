@@ -48,23 +48,24 @@ def main():
     # Create colliders for the static (non-PhysicsObject) objects in the scene
     floor = BoxCollider(Vector2(WIDTH, 200), Vector2(WIDTH / 2, HEIGHT + 101))
     rightWall = BoxCollider(Vector2(200, HEIGHT), Vector2(WIDTH + 101, HEIGHT / 2))
+    leftWall = BoxCollider(Vector2(200, HEIGHT), Vector2(0 + 101, HEIGHT / 2))
 
     # Register the colliders with the collision layer
     colLayer.register(floor, lambda c: None)
-    colLayer.register(rightWall, lambda c: print("Back we go!"))
+    colLayer.register(rightWall, lambda c: None)
+    for platform in env.get_colliders():
+        colLayer.register(platform, lambda c: None)
 
     # Create a physics object to test with
-    ball = PhysicsObject(Vector2(100, 100), CircleCollider(5), [colLayer], lambda c: None, True, .8, .1)
+    # ball = PhysicsObject(Vector2(100, 100), CircleCollider(5), [colLayer], lambda c: None, True, .8, .1)
 
     frameCount = 0
-    background, bg_image = get_background("Blue.png")
-    player = Player(100,100,50,50)
-
+    background, bg_image = get_background("Gray.png")
 
     running = True
     clock.tick()
     while running:
-
+        # Check for quit event
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -73,13 +74,10 @@ def main():
         player.handle_move(player)
         draw(window, background, env, bg_image, player)
 
-        # if frameCount % 30 == 0:
-        # ball.printDebug()
         PhysicsObject.updateAll(clock.get_time())
         colLayer.update()
 
         pygame.display.flip()
-
         
         frameCount += 1
         clock.tick(40)

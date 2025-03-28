@@ -6,7 +6,8 @@ class Environment:
     def __init__(self, screen):
         self.screen = screen
         self.platforms = []
-        self.colliders = CollisionLayer()  # List to store BoxCollider instances
+        self.colliders = []
+        # self.colliders = CollisionLayer()  # List to store BoxCollider instances
         self.textures = {}
         
         # Load textures
@@ -25,7 +26,7 @@ class Environment:
         self.construct_row(765, 865+50, 450, 50, "box")
         
         self.platforms.append((pygame.Rect(965, 400, 50, 50), "portal"))
-        self.colliders.register(BoxCollider(pygame.math.Vector2(50, 50), pygame.math.Vector2(965 + 25, 350 + 25)), lambda c: None)  # Register the portal collider
+        self.colliders.append(BoxCollider(pygame.math.Vector2(50, 50), pygame.math.Vector2(965 + 25, 350 + 25)))  # Register the portal collider
 
     def construct_row(self, start_x, end_x, y, size, texture_key):
         for x in range(start_x, end_x, size):  # Create small boxes every 50px across the width
@@ -37,7 +38,7 @@ class Environment:
                 pygame.math.Vector2(size, size), 
                 pygame.math.Vector2(x + size/2, y + size/2)  # Center position of the box
                 )
-            self.colliders.register(collider, lambda c: None)  # Add the collider to the list of colliders
+            self.colliders.append(collider)  # Add the collider to the list of colliders
 
     def get_platforms(self):
         return [platform for platform, _ in self.platforms]
