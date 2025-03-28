@@ -98,6 +98,4 @@ while running:
 # Quit pygame
 pygame.quit()
 sys.exit()
-=======
-    def draw(self):
-        pass
+
