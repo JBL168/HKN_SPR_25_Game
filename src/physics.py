@@ -25,6 +25,9 @@ class Collider(ABC):
 
   def moveTo(self, position: Vector2) -> None:
     self._position = position
+  
+  def getPosition(self) -> Vector2:
+    return self._position
 
   @property
   @abstractmethod
@@ -92,13 +95,13 @@ class CircleCollider(Collider):
     if isinstance(other, CircleCollider):
       positionDifference = self._position - other._position
       if positionDifference.length() < self._radius + other._radius:
-        return Collider.Collision(positionDifference.normalize().elementwise() * Vector2(1, -1))
+        return Collider.Collision(positionDifference.normalize())
       return None
     elif isinstance(other, BoxCollider):
       (ox1, oy1), (ox2, oy2) = other.boundingBox
       for corner in ((ox1, oy1), (ox1, oy2), (ox2, oy1), (ox2, oy2)):
         if (direction := self._position - Vector2(*corner)).length() < self._radius:
-          return Collider.Collision(direction.normalize().elementwise() * Vector2(1, -1))
+          return Collider.Collision(direction.normalize())
       else:
         return BoxCollider(Vector2(self._radius, self._radius) * 2, self._position)._checkCollision(other)
 
@@ -153,7 +156,13 @@ class PhysicsObject:
     self._collider.moveTo(self._position)
   
   def _onCollision(self, collision: Collider.Collision) -> None:
-    self._velocity = self._velocity.reflect(collision.direction) * self._restitution
+    # Only damp velocity in the direction normal to the collision plane
+    # (if a ball hits the floor at an angle, it shouldn't slow down in the x direction)
+    undampedVelocity = self._velocity.reflect(collision.direction)
+    normalComponent = undampedVelocity.project(collision.direction)
+    orthogonalComponent = undampedVelocity - normalComponent
+    normalComponent *= self._restitution
+    self._velocity = normalComponent + orthogonalComponent
     self._position = self._lastPosition.copy()
     self._collider.moveTo(self._position)
     self._collisionCB(collision)

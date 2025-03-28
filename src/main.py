@@ -24,13 +24,21 @@ def main():
     window = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
 
+    # Create a collision layer that holds all the objects that should be able to hit each other
     colLayer = CollisionLayer()
 
-    box1 = BoxCollider(pygame.Vector2(50, 10), pygame.Vector2(0, 100))
-    circle1 = CircleCollider(5, pygame.Vector2(0, 10))
+    # Create colliders for the static (non-PhysicsObject) objects in the scene
+    floor = BoxCollider(Vector2(WIDTH, 200), Vector2(WIDTH / 2, HEIGHT + 101))
+    rightWall = BoxCollider(Vector2(200, HEIGHT), Vector2(WIDTH + 101, HEIGHT / 2))
+    obstacle = CircleCollider(50, Vector2(98, 300))
 
-    colLayer.register(box1, lambda c: print("Doink!"))
-    ball = PhysicsObject(Vector2(0, 10), circle1, [colLayer], lambda c: None, True, .5)
+    # Register the colliders with the collision layer
+    colLayer.register(floor, lambda c: None)
+    colLayer.register(rightWall, lambda c: print("Back we go!"))
+    colLayer.register(obstacle, lambda c: print("Doink!"))
+
+    # Create a physics object to test with
+    ball = PhysicsObject(Vector2(100, 100), CircleCollider(5, Vector2(0, 10)), [colLayer], lambda c: None, True, .8)
 
     frameCount = 0
 
@@ -39,15 +47,20 @@ def main():
     while running:
         window.fill("white")
 
+        # Draw the obstacle and ball
+        pygame.draw.circle(window, pygame.Color(255, 0, 0), obstacle.getPosition(), 50)
+        pygame.draw.circle(window, pygame.Color(0, 0, 255), ball.getPosition(), 5)
+
         pygame.display.flip()
-        # if frameCount % 30 == 0:
-        ball.printDebug()
-        PhysicsObject.updateAll(clock.get_time())
-        colLayer.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+
+        # if frameCount % 30 == 0:
+        # ball.printDebug()
+        PhysicsObject.updateAll(clock.get_time())
+        colLayer.update()
         
         frameCount += 1
         clock.tick(40)
