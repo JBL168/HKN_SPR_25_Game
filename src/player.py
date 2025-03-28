@@ -1,7 +1,7 @@
 import pygame
-from physics import Physics
+from physics import PhysicsObject
 
-class Player(Physics):
+class Player(PhysicsObject):
     def __init__(self):
         '''
         Stub for initializing the player.
