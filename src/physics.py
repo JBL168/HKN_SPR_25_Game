@@ -105,6 +105,10 @@ class CircleCollider(Collider):
       else:
         return BoxCollider(Vector2(self._radius, self._radius) * 2, self._position)._checkCollision(other)
 
+'''
+A class that facilitates interactions between colliders.
+Calling `update()` will check for collisions between all registered colliders and invoke the registered `onCollide` callbacks in the event of a collision.
+'''
 class CollisionLayer:
   def __init__(self):
     self._colliders: list[Collider] = []
@@ -124,6 +128,9 @@ class CollisionLayer:
             onCollisionA(collision)
             onCollisionB(collision.invertPerspective())
 
+'''
+A class that encapsulates the functionality of a moving object that can collide with other objects.
+'''
 class PhysicsObject:
   _all: list[Self] = []
   
