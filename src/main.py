@@ -30,7 +30,7 @@ def main():
     circle1 = CircleCollider(5, pygame.Vector2(0, 10))
 
     colLayer.register(box1, lambda c: print("Doink!"))
-    ball = PhysicsObject(Vector2(0, 10), circle1, [colLayer], lambda c: None, True, 1)
+    ball = PhysicsObject(Vector2(0, 10), circle1, [colLayer], lambda c: None, True, .5)
 
     frameCount = 0
 
@@ -41,7 +41,7 @@ def main():
 
         pygame.display.flip()
         # if frameCount % 30 == 0:
-        print(ball.getPosition(), ball.getVelocity())
+        ball.printDebug()
         PhysicsObject.updateAll(clock.get_time())
         colLayer.update()
         for event in pygame.event.get():

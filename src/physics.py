@@ -131,7 +131,7 @@ class PhysicsObject:
 
   def __init__(self, position: Vector2, collider: Collider, collisionLayers: list[CollisionLayer], onCollision: Callable[[Collider.Collision], None] = lambda c: None, hasGravity: bool = True, bounciness: float = 0.3):
     self._position = position
-    self._lastPosition = position
+    self._lastPosition = position.copy()
     self._velocity = Vector2(0, 0)
     self._collider = collider
     self._collisionLayers = collisionLayers
@@ -148,13 +148,13 @@ class PhysicsObject:
   def update(self, frameTime: int) -> None:
     if self._hasGravity:
       self._velocity += Vector2(0, 1) * frameTime / 100
-    self._lastPosition = self._position
+    self._lastPosition = self._position.copy()
     self._position += self._velocity * frameTime / 100
     self._collider.moveTo(self._position)
   
   def _onCollision(self, collision: Collider.Collision) -> None:
     self._velocity = self._velocity.reflect(collision.direction) * self._restitution
-    self._position = self._lastPosition
+    self._position = self._lastPosition.copy()
     self._collider.moveTo(self._position)
     self._collisionCB(collision)
 
@@ -163,3 +163,6 @@ class PhysicsObject:
   
   def getVelocity(self) -> Vector2:
     return self._velocity
+  
+  def printDebug(self) -> None:
+    print(self._position, self._lastPosition, self._velocity)
