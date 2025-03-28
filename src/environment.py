@@ -7,5 +7,5 @@ class Environment:
     def get_platforms(self):
         pass
 
-    def draw():
+    def draw(self):
         pass
