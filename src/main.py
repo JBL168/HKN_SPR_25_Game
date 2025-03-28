@@ -33,15 +33,6 @@ def draw(window, background, bg_image, player):
     pygame.display.update()
 
 def main():
-    '''
-    Stub for initializing the player.
-    
-    TODO: 
-        - Instantiate game modules.
-        - Run game loop, processing events, updating game state, and rendering.
-        - Expand event handling.
-        - Integrate additional game modules and logic.
-    '''
     pygame.init()
     pygame.display.set_caption('HKN Project Game')
     

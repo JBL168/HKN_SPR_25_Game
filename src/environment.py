@@ -1,18 +1,12 @@
 import pygame
 import sys
+from physics import BoxCollider, CollisionLayer
 
 class Environment:
     def __init__(self, screen):
-        '''
-        Stub for initializing the environment.
-        
-        TODO: Set up initial level layout, define platforms.
-        
-        Variables:
-          self.platforms: a list of pygame.Rect objects as platforms.
-        '''
         self.screen = screen
         self.platforms = []
+        self.colliders = []  # List to store BoxCollider instances
         self.textures = {}
         
         # Load textures
@@ -23,50 +17,35 @@ class Environment:
         # Define platforms (x, y, width, height, texture_key)
         
         # Add small boxes for grass
-        for x in range(0, 1280, 50):  # Create small boxes every 50px across the width
-            self.platforms.append((pygame.Rect(x, 670, 50, 50), "grass"))
+        self.construct_row(0, 1280, 670, 50, "grass")  # Create a row of grass boxes at y=670
 
         # Blocks to jump on (3, 4, and 3 boxes arrangement)
-        self.platforms.append((pygame.Rect(315, 500, 50, 50), "box"))  
-        self.platforms.append((pygame.Rect(365, 500, 50, 50), "box"))
-        self.platforms.append((pygame.Rect(415, 500, 50, 50), "box"))
-        
-        self.platforms.append((pygame.Rect(515, 450, 50, 50), "box")) 
-        self.platforms.append((pygame.Rect(565, 450, 50, 50), "box"))
-        self.platforms.append((pygame.Rect(615, 450, 50, 50), "box"))
-        self.platforms.append((pygame.Rect(665, 450, 50, 50), "box"))
-        
-        self.platforms.append((pygame.Rect(765, 400, 50, 50), "box")) 
-        self.platforms.append((pygame.Rect(815, 400, 50, 50), "box"))
-        self.platforms.append((pygame.Rect(865, 400, 50, 50), "box"))
+        self.construct_row(315, 415, 500, 50, "box")
+        self.construct_row(515, 665, 450, 50, "box")
+        self.construct_row(765, 865, 400, 50, "box")
         
         self.platforms.append((pygame.Rect(965, 350, 50, 50), "portal"))
-        
-        pass
+        self.colliders.append(BoxCollider(pygame.math.Vector2(50, 50), pygame.math.Vector2(965 + 25, 350 + 25)))
+
+    def construct_row(self, start_x, end_x, y, size, texture_key):
+        for x in range(start_x, end_x, size):  # Create small boxes every 50px across the width
+            platform_rect = pygame.Rect(x, y, size, size)  # Grass box dimensions and position
+            self.platforms.append((platform_rect, "grass"))
+
+            # Create a BoxCollider for each grass box
+            collider = BoxCollider(
+                pygame.math.Vector2(size, size), 
+                pygame.math.Vector2(x + size/2, y + size/2)  # Center position of the box
+                )
+            self.colliders.append(collider)  # Add the collider to the list of colliders
 
     def get_platforms(self):
-        '''
-        Stub for retrieving the list of platforms in the environment.
-        
-        Returns:
-          a list of pygame.Rect objects as platforms.
-        '''
         return [platform for platform, _ in self.platforms]
-        pass
 
-    def draw(self): # may look into adding textures, up to u
-        '''
-        Stub for displaying the environment onto the screen.
-
-        TODO: Implement drawing logic for all level elements (platforms, backgrounds, etc)
-
-        Parameters:
-          screen: The pygame.Surface game screen where environment should be rendered.
-        '''
+    def draw(self):
         for platform, texture_key in self.platforms:
             texture = pygame.transform.scale(self.textures[texture_key], (platform.width, platform.height))
             self.screen.blit(texture, (platform.x, platform.y))
-        pass
 
 # Initialize pygame
 pygame.init()
@@ -98,4 +77,3 @@ while running:
 # Quit pygame
 pygame.quit()
 sys.exit()
-
