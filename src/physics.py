@@ -1,57 +1,8 @@
 from typing import Self
 import pygame
-from pygame import Vector2
+from pygame import Vector2, Clock
 from abc import ABC, abstractmethod
-
-class PhysicsObject:
-  def __init__(self, position=(0,0), size=(50,50)):
-      '''
-      Stub for initializing an object. These attributes will be inherited by player.
-      
-      TODO: initialize variables
-
-      Variables:
-        self.position: the object's position vector
-        self.velocity: the object's velocity vector.
-        self.acceleration: the object's position vector.
-        self.hitbox: the object's hitbox (pygame.Rect). 
-      '''
-      pass
-  
-  def apply_gravity(self, has_gravity, gravity_amount):
-    '''
-    Stub for applying gravity to an object's velocity.
-    
-    Parameters:
-      self.has_gravity: gravity flag
-      self.gravity_amount: may potentially want different gravities
-    '''
-    pass
-
-  def apply_acceleration(self): # up to you
-    pass
-
-  def update_physics():
-    '''
-    Stub for updating the object physics.
-    
-    TODO:
-          - Update velocity based on acceleration.
-          - Update position based on velocity.
-          - Recalculate the hitbox's position.
-    '''
-
-  def check_collisions():
-    '''
-    Stub for checking collisions between an entity and the environment.
-    
-    Parameters:
-      environment: the environment containing objects for potential collision.
-
-    Returns:
-      a list of collisions (empty if no collisions are detected).
-    '''
-    pass
+from collections.abc import Callable
 
 '''
 An abstract Collider class defining a standard interface for manipulating colliders of all shapes.
@@ -150,3 +101,65 @@ class CircleCollider(Collider):
           return Collider.Collision(direction.normalize().elementwise() * Vector2(1, -1))
       else:
         return BoxCollider(Vector2(self._radius, self._radius) * 2, self._position)._checkCollision(other)
+
+class CollisionLayer:
+  def __init__(self):
+    self._colliders: list[Collider] = []
+    self._callbacks: list[Callable[[Collider.Collision], None]] = []
+  
+  def register(self, collider: Collider, onCollision: Callable[[Collider.Collision], None]) -> None:
+    self._colliders.append(collider)
+    self._callbacks.append(onCollision)
+  
+  def update(self) -> None:
+    hitList: dict[Collider, list[Collider]] = dict()
+    for colliderA, onCollisionA in zip(self._colliders, self._callbacks):
+      hitList.update({colliderA: []})
+      for colliderB, onCollisionB in zip(self._colliders, self._callbacks):
+        if colliderB is not colliderA and (collision := colliderA.checkCollision(colliderB)):
+          if colliderB in hitList.keys() and colliderA not in hitList.get(colliderB):
+            onCollisionA(collision)
+            onCollisionB(collision.invertPerspective())
+
+class PhysicsObject:
+  _all: list[Self] = []
+  
+  @staticmethod
+  def updateAll(frameTime: int) -> None:
+    for obj in PhysicsObject._all:
+      obj.update(frameTime)
+
+  def __init__(self, position: Vector2, collider: Collider, collisionLayers: list[CollisionLayer], onCollision: Callable[[Collider.Collision], None] = lambda c: None, hasGravity: bool = True, bounciness: float = 0.3):
+    self._position = position
+    self._lastPosition = position
+    self._velocity = Vector2(0, 0)
+    self._collider = collider
+    self._collisionLayers = collisionLayers
+    self._collisionCB = onCollision
+    self._hasGravity = hasGravity
+    self._restitution = bounciness
+    for layer in self._collisionLayers:
+      layer.register(self._collider, self._onCollision)
+    PhysicsObject._all.append(self)
+
+  def apply_acceleration(self): # up to you
+    pass
+
+  def update(self, frameTime: int) -> None:
+    if self._hasGravity:
+      self._velocity += Vector2(0, 1) * frameTime / 100
+    self._lastPosition = self._position
+    self._position += self._velocity * frameTime / 100
+    self._collider.moveTo(self._position)
+  
+  def _onCollision(self, collision: Collider.Collision) -> None:
+    self._velocity = self._velocity.reflect(collision.direction) * self._restitution
+    self._position = self._lastPosition
+    self._collider.moveTo(self._position)
+    self._collisionCB(collision)
+
+  def getPosition(self) -> Vector2:
+    return self._position
+  
+  def getVelocity(self) -> Vector2:
+    return self._velocity
