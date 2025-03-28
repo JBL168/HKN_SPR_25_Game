@@ -2,53 +2,42 @@ import pygame
 import os
 from os import listdir
 from os.path import isfile, join
+from physics import *
 
-class Player(pygame.sprite.Sprite):  # Collision
+class Player(pygame.sprite.Sprite, PhysicsObject):  # Collision
     COLOR = (255, 0, 0)
-    GRAVITY = 1
     ANIMATION_DELAY = 3
+    MOVE_SPEED = 10
+    MOVE_ACCEL = 5
 
-    def __init__(self, x, y, width, height):
-        
-        self.rect = pygame.Rect(x, y, width, height)
-        self.x_vel = 0
-        self.y_vel = 0
+    def __init__(self, pos: Vector2, size: Vector2, collisionLayers: list[CollisionLayer], window: pygame.Surface):
+        pygame.sprite.Sprite.__init__(self)
+        PhysicsObject.__init__(self, pos, BoxCollider(size), collisionLayers, lambda c: None, True, 0.5, 0)
+        self._rect = pygame.Rect(pos - size/2, size)
+        self._size = size
+        self._surface = window
         self.mask = None
         self.direction = "left"
         self.animation_count = 0   # Reset animation
-        
-    def move(self, dx, dy):
-        self.rect.x += dx
-        self.rect.y += dy
 
-    def move_left(self, vel):
-        self.x_vel = -vel
-        if self.direction != "left":
-            self.direction = "left"
-            self.animation_count = 0
-
-    def move_right(self, vel):
-        self.x_vel = vel
-        if self.direction != "right":
-            self.direction = "right"
-            self.animation_count = 0
-
-    def loop(self, fps):
-        self.move(self.x_vel, self.y_vel)
-
-    def handle_move(self, player):
+    def handle_move(self):
         keys = pygame.key.get_pressed()
-        player.x_vel = 0
-        PLAYER_VEL = 5
+        targetXVelocity = 0
 
         if keys[pygame.K_LEFT]:
-            player.move_left(PLAYER_VEL)
+            targetXVelocity = -Player.MOVE_SPEED
         if keys[pygame.K_RIGHT]:
-            player.move_right(PLAYER_VEL)
+            targetXVelocity = Player.MOVE_SPEED
 
-    def update(self):
-        self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y))
-        self.mask = pygame.mask.from_surface(self.sprite)
+        if self.getVelocity().x > targetXVelocity:
+            self.applyImpulse(Vector2(max(-Player.MOVE_ACCEL, targetXVelocity - self.getVelocity().x), 0))
+        elif self.getVelocity().x < targetXVelocity:
+            self.applyImpulse(Vector2(min(Player.MOVE_ACCEL, targetXVelocity - self.getVelocity().x), 0))
+
+    def update(self, frameTime: int):
+        PhysicsObject.update(self, frameTime)
+        self._rect.center = self.getPosition()
+        self.mask = pygame.mask.from_surface(self._surface)
 
     def draw(self, win):
-        pygame.draw.rect(win, self.COLOR, self.rect)
+        pygame.draw.rect(win, self.COLOR, self._rect)

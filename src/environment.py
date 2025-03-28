@@ -36,7 +36,7 @@ class Environment:
             collider = BoxCollider(
                 pygame.math.Vector2(size, size), 
                 pygame.math.Vector2(x + size/2, y + size/2)  # Center position of the box
-                )
+            )
             self.colliders.append(collider)  # Add the collider to the list of colliders
 
     def get_platforms(self):
@@ -47,33 +47,33 @@ class Environment:
             texture = pygame.transform.scale(self.textures[texture_key], (platform.width, platform.height))
             self.screen.blit(texture, (platform.x, platform.y))
 
-# Initialize pygame
-pygame.init()
+# # Initialize pygame
+# pygame.init()
 
-# Screen settings
-WIDTH, HEIGHT = 1280, 720
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("HKN Game Project")
+# # Screen settings
+# WIDTH, HEIGHT = 1280, 720
+# screen = pygame.display.set_mode((WIDTH, HEIGHT))
+# pygame.display.set_caption("HKN Game Project")
 
-# Create an instance of the Environment class
-env = Environment(screen)
+# # Create an instance of the Environment class
+# env = Environment(screen)
 
-# Game loop
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+# # Game loop
+# running = True
+# while running:
+#     for event in pygame.event.get():
+#         if event.type == pygame.QUIT:
+#             running = False
     
-    # Fill the screen with a background color
-    screen.fill((135, 206, 235))  # Sky blue background
+#     # Fill the screen with a background color
+#     screen.fill((135, 206, 235))  # Sky blue background
     
-    # Draw the environment
-    env.draw()
+#     # Draw the environment
+#     env.draw()
     
-    # Update the display
-    pygame.display.flip()
+#     # Update the display
+#     pygame.display.flip()
 
-# Quit pygame
-pygame.quit()
-sys.exit()
+# # Quit pygame
+# pygame.quit()
+# sys.exit()

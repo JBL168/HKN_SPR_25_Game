@@ -52,30 +52,37 @@ def main():
     colLayer.register(obstacle, lambda c: print("Doink!"))
 
     # Create a physics object to test with
-    ball = PhysicsObject(Vector2(100, 100), CircleCollider(5), [colLayer], lambda c: None, True, .8, .1)
+    # ball = PhysicsObject(Vector2(100, 100), CircleCollider(5), [colLayer], lambda c: None, True, .8, .1)
 
     frameCount = 0
     background, bg_image = get_background("Blue.png")
-    player = Player(100,100,50,50)
+
+    player = Player(Vector2(100, 100), Vector2(50, 50), [colLayer], window)
+    env = Environment(window)
 
 
     running = True
     clock.tick()
     while running:
-        window.fill("white")
-
-        # Draw the obstacle and ball
-        pygame.draw.circle(window, pygame.Color(255, 0, 0), obstacle.getPosition(), 50)
-        pygame.draw.circle(window, pygame.Color(0, 0, 255), ball.getPosition(), 5)
-
-        pygame.display.flip()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-        player.loop(FPS)
-        player.handle_move(player)
-        draw(window, background, bg_image, player)
+        # player.loop(FPS)
+        player.handle_move()
+
+        for tile in background:
+            window.blit(bg_image, tile)
+        env.draw()
+        player.draw(window)
+        
+        # draw(window, background, bg_image, player)
+
+        # Draw the obstacle and ball
+        pygame.draw.circle(window, pygame.Color(255, 0, 0), obstacle.getPosition(), 50)
+        # pygame.draw.circle(window, pygame.Color(0, 0, 255), ball.getPosition(), 5)
+
+        pygame.display.flip()
 
         # if frameCount % 30 == 0:
         # ball.printDebug()

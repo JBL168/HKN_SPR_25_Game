@@ -149,18 +149,21 @@ class PhysicsObject:
     self._hasGravity = hasGravity
     self._restitution = bounciness
     self._friction = friction
+    self._nextImpulse = Vector2(0, 0)
     for layer in self._collisionLayers:
       layer.register(self._collider, self._onCollision)
     PhysicsObject._all.append(self)
 
-  def apply_acceleration(self): # up to you
-    pass
+  def applyImpulse(self, v: Vector2): # up to you
+    self._nextImpulse += v
 
   def update(self, frameTime: int) -> None:
     if self._hasGravity:
       self._velocity += Vector2(0, 1) * frameTime / 100
+    self._velocity += self._nextImpulse * frameTime / 100
+    self._nextImpulse = Vector2(0, 0)
     self._lastPosition = self._position.copy()
-    self._position += self._velocity * frameTime / 100
+    self._position = self._lastPosition + self._velocity * frameTime / 100
     self._collider.moveTo(self._position)
   
   def _onCollision(self, collision: Collider.Collision) -> None:
@@ -168,11 +171,13 @@ class PhysicsObject:
     # (if a ball hits the floor at an angle, it shouldn't slow down in the x direction)
     undampedVelocity = self._velocity.reflect(collision.direction)
     normalComponent = undampedVelocity.project(collision.direction)
-    orthogonalComponent = undampedVelocity - normalComponent
+    undampedOrthogonalComponent = undampedVelocity - normalComponent
     normalComponent *= self._restitution
-    orthogonalComponent *= (1 - self._friction)
+    orthogonalComponent = undampedOrthogonalComponent * (1 - self._friction)
     self._velocity = normalComponent + orthogonalComponent
-    self._position = self._lastPosition.copy()
+    # self._position = self._lastPosition.copy()
+    # self._position = self._lastPosition + self._velocity.project(undampedOrthogonalComponent) if undampedOrthogonalComponent.magnitude() > 0.01 else Vector2(0, 0)
+    self._position += (self._lastPosition - self._position).project(collision.direction)
     self._collider.moveTo(self._position)
     self._collisionCB(collision)
 
