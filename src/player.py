@@ -2,14 +2,23 @@ import pygame
 import os
 from os import listdir
 from os.path import isfile, join
+from physics import PhysicsObject, BoxCollider
 
-class Player(pygame.sprite.Sprite):  # Collision
+class Player(PhysicsObject):  # Collision
     COLOR = (255, 0, 0)
     GRAVITY = 1
     ANIMATION_DELAY = 3
 
-    def __init__(self, x, y, width, height):
-        
+    def __init__(self, x, y, width, height, collisionLayers=[]):
+        super().__init__(
+            position=pygame.math.Vector2(x, y),
+            collider=BoxCollider(pygame.math.Vector2(width, height), 
+                        pygame.math.Vector2(x + width / 2, y + height / 2)
+                        ), 
+            collisionLayers=collisionLayers, 
+            hasGravity=True, 
+            bounciness=0, 
+            friction=0.1)
         self.rect = pygame.Rect(x, y, width, height)
         self.x_vel = 0
         self.y_vel = 0
@@ -33,6 +42,9 @@ class Player(pygame.sprite.Sprite):  # Collision
             self.direction = "right"
             self.animation_count = 0
 
+    def jump(self, jump_height):
+        pass
+            
     def loop(self, fps):
         self.move(self.x_vel, self.y_vel)
 
@@ -45,6 +57,8 @@ class Player(pygame.sprite.Sprite):  # Collision
             player.move_left(PLAYER_VEL)
         if keys[pygame.K_RIGHT]:
             player.move_right(PLAYER_VEL)
+        if keys[pygame.K_UP]:
+            player.jump()
 
     def update(self):
         self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y))
