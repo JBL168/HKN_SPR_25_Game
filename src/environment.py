@@ -54,7 +54,6 @@ class Environment:
         return [platform for platform, _ in self.platforms]
         pass
 
-<<<<<<< HEAD
     def draw(self): # may look into adding textures, up to u
         '''
         Stub for displaying the environment onto the screen.
@@ -102,4 +101,3 @@ sys.exit()
 =======
     def draw(self):
         pass
->>>>>>> player-move-draw
