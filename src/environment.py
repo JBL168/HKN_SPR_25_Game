@@ -20,9 +20,9 @@ class Environment:
         self.construct_row(0, 1280, 670, 50, "grass")  # Create a row of grass boxes at y=670
 
         # Blocks to jump on (3, 4, and 3 boxes arrangement)
-        self.construct_row(315, 415, 500, 50, "box")
-        self.construct_row(515, 665, 450, 50, "box")
-        self.construct_row(765, 865, 400, 50, "box")
+        self.construct_row(315, 415+50, 500, 50, "box")
+        self.construct_row(515, 665+50, 450, 50, "box")
+        self.construct_row(765, 865+50, 400, 50, "box")
         
         self.platforms.append((pygame.Rect(965, 350, 50, 50), "portal"))
         self.colliders.append(BoxCollider(pygame.math.Vector2(50, 50), pygame.math.Vector2(965 + 25, 350 + 25)))
