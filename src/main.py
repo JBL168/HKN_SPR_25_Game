@@ -32,7 +32,6 @@ def draw(window, background, bg_image, player):
     player.draw(window)
     pygame.display.update()
 
-<<<<<<< HEAD
 def main():
     '''
     Stub for initializing the player.
@@ -45,13 +44,9 @@ def main():
     '''
     pygame.init()
     pygame.display.set_caption('HKN Project Game')
-=======
-def main(window):
->>>>>>> player-move-draw
     
     clock = pygame.time.Clock()
 
-<<<<<<< HEAD
     # Create a collision layer that holds all the objects that should be able to hit each other
     colLayer = CollisionLayer()
 
@@ -69,16 +64,13 @@ def main(window):
     ball = PhysicsObject(Vector2(100, 100), CircleCollider(5), [colLayer], lambda c: None, True, .8, .1)
 
     frameCount = 0
-=======
     background, bg_image = get_background("Blue.png")
     player = Player(100,100,50,50)
 
->>>>>>> player-move-draw
 
     running = True
     clock.tick()
     while running:
-<<<<<<< HEAD
         window.fill("white")
 
         # Draw the obstacle and ball
@@ -86,9 +78,6 @@ def main(window):
         pygame.draw.circle(window, pygame.Color(0, 0, 255), ball.getPosition(), 5)
 
         pygame.display.flip()
-=======
-        clock.tick(FPS)
->>>>>>> player-move-draw
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -97,7 +86,6 @@ def main(window):
         player.handle_move(player)
         draw(window, background, bg_image, player)
 
-<<<<<<< HEAD
         # if frameCount % 30 == 0:
         # ball.printDebug()
         PhysicsObject.updateAll(clock.get_time())
@@ -108,10 +96,3 @@ def main(window):
 
 if __name__ == '__main__':
     main()
-=======
-    pygame.quit()
-    quit()
-
-if __name__ == "__main__":
-    main(window)
->>>>>>> player-move-draw
