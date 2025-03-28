@@ -26,12 +26,6 @@ def get_background(name):
 
     return tiles, image
 
-def draw(window, background, bg_image, player):
-    for tile in background:
-        window.blit(bg_image, tile)
-    player.draw(window)
-    pygame.display.update()
-
 def main():
     pygame.init()
     pygame.display.set_caption('HKN Project Game')
@@ -41,25 +35,14 @@ def main():
     # Create a collision layer that holds all the objects that should be able to hit each other
     colLayer = CollisionLayer()
 
-    # Create colliders for the static (non-PhysicsObject) objects in the scene
-    floor = BoxCollider(Vector2(WIDTH, 200), Vector2(WIDTH / 2, HEIGHT + 101))
-    rightWall = BoxCollider(Vector2(200, HEIGHT), Vector2(WIDTH + 101, HEIGHT / 2))
-    obstacle = CircleCollider(50, Vector2(98, 300))
-
-    # Register the colliders with the collision layer
-    colLayer.register(floor, lambda c: None)
-    colLayer.register(rightWall, lambda c: print("Back we go!"))
-    colLayer.register(obstacle, lambda c: print("Doink!"))
-
-    # Create a physics object to test with
-    # ball = PhysicsObject(Vector2(100, 100), CircleCollider(5), [colLayer], lambda c: None, True, .8, .1)
-
     frameCount = 0
     background, bg_image = get_background("Blue.png")
 
     player = Player(Vector2(100, 100), Vector2(50, 50), [colLayer], window)
     env = Environment(window)
 
+    for collider in env.colliders:
+        colLayer.register(collider, lambda c: None)
 
     running = True
     clock.tick()
@@ -68,27 +51,19 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-        # player.loop(FPS)
+        
         player.handle_move()
+
+        PhysicsObject.updateAll(clock.get_time())
+        colLayer.update()
 
         for tile in background:
             window.blit(bg_image, tile)
         env.draw()
         player.draw(window)
-        
-        # draw(window, background, bg_image, player)
-
-        # Draw the obstacle and ball
-        pygame.draw.circle(window, pygame.Color(255, 0, 0), obstacle.getPosition(), 50)
-        # pygame.draw.circle(window, pygame.Color(0, 0, 255), ball.getPosition(), 5)
 
         pygame.display.flip()
 
-        # if frameCount % 30 == 0:
-        # ball.printDebug()
-        PhysicsObject.updateAll(clock.get_time())
-        colLayer.update()
-        
         frameCount += 1
         clock.tick(40)
 

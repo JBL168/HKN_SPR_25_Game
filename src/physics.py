@@ -154,12 +154,9 @@ class PhysicsObject:
       layer.register(self._collider, self._onCollision)
     PhysicsObject._all.append(self)
 
-  def applyImpulse(self, v: Vector2): # up to you
-    self._nextImpulse += v
-
   def update(self, frameTime: int) -> None:
     if self._hasGravity:
-      self._velocity += Vector2(0, 1) * frameTime / 100
+      self._velocity += Vector2(0, 5) * frameTime / 100
     self._velocity += self._nextImpulse * frameTime / 100
     self._nextImpulse = Vector2(0, 0)
     self._lastPosition = self._position.copy()
@@ -175,8 +172,6 @@ class PhysicsObject:
     normalComponent *= self._restitution
     orthogonalComponent = undampedOrthogonalComponent * (1 - self._friction)
     self._velocity = normalComponent + orthogonalComponent
-    # self._position = self._lastPosition.copy()
-    # self._position = self._lastPosition + self._velocity.project(undampedOrthogonalComponent) if undampedOrthogonalComponent.magnitude() > 0.01 else Vector2(0, 0)
     self._position += (self._lastPosition - self._position).project(collision.direction)
     self._collider.moveTo(self._position)
     self._collisionCB(collision)
@@ -186,6 +181,12 @@ class PhysicsObject:
   
   def getVelocity(self) -> Vector2:
     return self._velocity
+  
+  def setVelocity(self, v: Vector2) -> None:
+    self._velocity = v.copy()
+  
+  def applyImpulse(self, v: Vector2): # up to you
+    self._nextImpulse += v
   
   def printDebug(self) -> None:
     print(self._position, self._lastPosition, self._velocity)

@@ -7,12 +7,20 @@ from physics import *
 class Player(pygame.sprite.Sprite, PhysicsObject):  # Collision
     COLOR = (255, 0, 0)
     ANIMATION_DELAY = 3
-    MOVE_SPEED = 10
-    MOVE_ACCEL = 5
+    MOVE_SPEED = 50
+    MOVE_ACCEL = 15
+    JUMP_SPEED = 42
+
+    def _letJumpOnGround(self, collision: Collider.Collision):
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_UP] and collision.direction.y > 0:
+            xVel = self.getVelocity().x
+            self.setVelocity(Vector2(xVel, -Player.JUMP_SPEED))
 
     def __init__(self, pos: Vector2, size: Vector2, collisionLayers: list[CollisionLayer], window: pygame.Surface):
         pygame.sprite.Sprite.__init__(self)
-        PhysicsObject.__init__(self, pos, BoxCollider(size), collisionLayers, lambda c: None, True, 0.5, 0)
+        PhysicsObject.__init__(self, pos, BoxCollider(size), collisionLayers, self._letJumpOnGround, True, 0, 0)
         self._rect = pygame.Rect(pos - size/2, size)
         self._size = size
         self._surface = window
