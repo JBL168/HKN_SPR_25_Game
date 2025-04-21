@@ -38,7 +38,11 @@ class Player(pygame.sprite.Sprite):  # Collision
 
     @classmethod
     def load_assets(cls):
-        cls.SPRITES = load_sprite_sheets("Main Characters", "Mask Dude", 32, 32, True) # left and right animation
+        cls.SPRITES = load_sprite_sheets("Main Characters", "Mask Dude", 32, 32, True)
+
+   
+    #SPRITES = load_sprite_sheets("Main Characters", "Mask Dude", 32, 32, True) # left and right animation
+
     
 
     def __init__(self, x, y, width, height):
@@ -63,6 +67,7 @@ class Player(pygame.sprite.Sprite):  # Collision
         if self.jump_count == 1:
             self.fall_count = 0
 
+
     def landed(self):
         self.fall_count = 0
         self.y_vel = 0
@@ -71,6 +76,7 @@ class Player(pygame.sprite.Sprite):  # Collision
     def hit_head(self):
         self.count = 0
         self.y_vel *= -1
+
 
     def move(self, dx, dy):
         self.rect.x += dx
@@ -93,11 +99,27 @@ class Player(pygame.sprite.Sprite):  # Collision
     def loop(self, fps):
         self.y_vel += min(1, (self.fall_count / fps) * self.GRAVITY)
         self.move(self.x_vel, self.y_vel)
-        self.fall_count += 1
+        self.fall_count += 1  # start
         self.update_sprite()
 
- 
-  
+
+    def landed(self):
+        self.fall_count = 0
+        self.y_vel = 0
+        self.jump_count = 0
+
+    '''
+    def handle_move(self, player):
+        keys = pygame.key.get_pressed()
+        player.x_vel = 0
+        PLAYER_VEL = 5
+
+        if keys[pygame.K_LEFT]:
+            player.move_left(PLAYER_VEL)
+        if keys[pygame.K_RIGHT]:
+            player.move_right(PLAYER_VEL)
+    '''  
+
 
     def update(self):
         self.rect = self.sprite.get_rect(topleft=(self.rect.x, self.rect.y))
@@ -116,6 +138,7 @@ class Player(pygame.sprite.Sprite):  # Collision
             sprite_sheet = "Fall (32x32)"
         elif self.x_vel != 0:
             sprite_sheet = "Run (32x32)"
+
         sprite_sheet_name = sprite_sheet + "_" + self.direction
         sprites = self.SPRITES[sprite_sheet_name]
         sprite_index = (self.animation_count // self.ANIMATION_DELAY) % len(sprites) # dynamic
