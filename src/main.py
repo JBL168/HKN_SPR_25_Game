@@ -30,6 +30,10 @@ def main():
     pygame.init()
     pygame.display.set_caption('HKN Project Game')
     
+    pygame.init()
+    pygame.display.set_caption('HKN Project Game')
+
+    
     clock = pygame.time.Clock()
 
     # Create a collision layer that holds all the objects that should be able to hit each other

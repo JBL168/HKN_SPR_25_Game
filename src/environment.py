@@ -3,6 +3,7 @@ import sys
 from physics import BoxCollider, CollisionLayer
 
 class Environment:
+
     def __init__(self, screen):
         self.screen = screen
         self.platforms = []
@@ -77,3 +78,4 @@ class Environment:
 # # Quit pygame
 # pygame.quit()
 # sys.exit()
+

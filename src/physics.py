@@ -4,6 +4,7 @@ from pygame import Vector2, Clock
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 
+
 '''
 An abstract Collider class defining a standard interface for manipulating colliders of all shapes.
 Attempting to instantiate this class is illegal.
@@ -190,3 +191,4 @@ class PhysicsObject:
   
   def printDebug(self) -> None:
     print(self._position, self._lastPosition, self._velocity)
+
